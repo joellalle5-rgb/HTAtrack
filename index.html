@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyperTrack Pro — HTA</title>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#16202e"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--ink:#16202e;--mut:#5b6776;--bg:#eef1f0;--line:#d5dbd9;--blue:#1d4e89;--red:#b8322a;--amb:#b7791f;--grn:#2e7d5b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+h1,h2,h3{font-family:Georgia,"Iowan Old Style",serif;margin:0 0 8px}h3{font-size:17px}
+header{background:var(--ink);color:#fff;padding:10px 16px;position:sticky;top:0;z-index:5}
+header b{font:700 21px Georgia,serif}header small{color:#9fb0c4;margin-left:8px}
+nav{display:flex;gap:6px;overflow-x:auto;margin-top:8px;padding-bottom:2px}
+nav button{white-space:nowrap;border:1px solid #3a4a5e;background:transparent;color:#cdd6e2;padding:6px 12px;border-radius:999px;cursor:pointer;font:inherit;font-size:14px}
+nav button.on{background:#fff;color:var(--ink);border-color:#fff}
+main{max-width:1060px;margin:0 auto;padding:16px}
+.pg{display:none}.pg.on{display:block}
+.row{display:grid;grid-template-columns:1fr 330px;gap:16px;align-items:start}
+@media(max-width:820px){.row{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:16px;margin-bottom:12px}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:10px;margin-bottom:8px}
+label{display:block;font-size:13px;color:var(--mut)}
+input,select{width:100%;padding:8px;border:1px solid var(--line);border-radius:6px;font:inherit;color:var(--ink);background:#fff}
+.ck{display:flex;gap:8px;align-items:flex-start;color:var(--ink);font-size:14px;padding:3px 0}.ck input{width:auto;margin-top:5px}
+.v{border-left:5px solid;padding:9px 14px;border-radius:6px;margin-bottom:10px;font-size:14px}
+.v b{display:block;font:700 16px Georgia,serif;margin-bottom:2px}
+.v.r{background:#fbe9e7;border-color:var(--red)}.v.a{background:#fdf3dc;border-color:var(--amb)}.v.g{background:#e4f3ec;border-color:var(--grn)}.v.b{background:#e6eef7;border-color:var(--blue)}
+.v ul{margin:4px 0 0;padding-left:18px}
+button.p,button.s{padding:9px 16px;border-radius:6px;font:inherit;cursor:pointer;border:1px solid var(--blue);margin:4px 6px 0 0}
+button.p{background:var(--blue);color:#fff}button.s{background:#fff;color:var(--blue)}
+.tbl{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:13px}td,th{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}th{background:#e6eef7}
+details{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin-bottom:8px}summary{cursor:pointer;font-weight:600}
+.kv{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:3px 0;font-size:14px}
+:focus-visible{outline:3px solid #f2a900;outline-offset:2px}
+.note{font-size:12px;color:var(--mut)}
+</style></head><body>
+<header><b>HyperTrack Pro</b><small>HTA · diagnostic → traitement</small><nav id="nav"></nav></header>
+<main>
+<section class="pg" id="p1"><div class="row"><div>
+<div class="card"><h2>1 · Mesures et diagnostic</h2><div class="g" id="f1"></div>
+<h3>Signes de gravité (cocher si présents)</h3><div id="c1"></div>
+<details><summary>Technique de mesure</summary><p class="note">Repos assis 5 min, dos soutenu, bras à hauteur du cœur, brassard adapté (gros bras ≥ 32 cm : brassard large), 2–3 mesures espacées de 1–2 min (moyenne), 1ʳᵉ consultation aux deux bras (retenir le plus élevé), PA debout à 1 et 3 min si ≥ 65 ans, diabète ou sujet fragile.</p></details>
+<button class="p" onclick="go('p2')">Continuer</button></div></div>
+<div><div class="card"><svg id="gz" viewBox="0 0 300 250" width="100%" role="img" aria-label="Zones tensionnelles"></svg><p class="note">PAD en abscisse, PAS en ordonnée. Zones : normale, élevée, grades 1, 2, 3.</p></div><div id="vd"></div></div></div></section>
+
+<section class="pg" id="p2"><div class="card"><h2>2 · Causes secondaires et facteurs aggravants</h2><p class="note">Cocher ce qui est observé : l’appli indique quoi chercher, et pourquoi.</p><div id="c2"></div>
+<button class="s" onclick="go('p1')">Retour</button><button class="p" onclick="go('p3')">Continuer</button></div><div id="o2"></div></section>
+
+<section class="pg" id="p3"><div class="row"><div>
+<div class="card"><h2>3 · Retentissement : clinique d’abord</h2><p class="note">Cocher ce qui est retrouvé à l’interrogatoire et à l’examen. Aucune case cochée ne vaut « normal » : l’examen doit avoir été fait.</p>
+<h3>Cœur (critères de Framingham)</h3><div id="cc1"></div><div id="cc2"></div>
+<h3>Autres organes</h3><div id="cx"></div><h3>Antécédents / diagnostics connus</h3><div id="c3a"></div><h3>Facteurs de risque</h3><div id="c3b"></div></div>
+<div class="card"><h2>Paraclinique (accessoire — si disponible)</h2><div class="g" id="f3"></div><div id="c3c"></div>
+<button class="s" onclick="go('p2')">Retour</button><button class="p" onclick="go('p4')">Continuer</button></div></div><div id="o3"></div></div></section>
+
+<section class="pg" id="p4"><div class="row"><div><div class="card"><h2>4 · Terrain et traitement en cours</h2><div id="c4"></div><h3>Traitement actuel</h3><div id="c4b"></div><h3>Paraclinique de phénotypage (accessoire)</h3><div class="g" id="f4"></div>
+<button class="s" onclick="go('p3')">Retour</button><button class="p" onclick="go('p5')">Prise en charge</button></div></div><div id="o4"></div></div></section>
+
+<section class="pg" id="p5"><div id="o5"></div><button class="s" onclick="go('p4')">Retour</button></section>
+
+<section class="pg" id="pu"><h2>Urgences hypertensives</h2><div id="uu"></div></section>
+<section class="pg" id="pm"><h2>Médicaments par famille</h2><input id="q" placeholder="Rechercher (DCI, nom commercial, famille)…" style="margin-bottom:10px"><div class="card tbl"><table id="mt"></table></div><p class="note">Liste des antihypertenseurs disponibles (sans prix). Les doses sont proposées à l’étape 5.</p></section>
+</main>
+<script>
+const $=i=>document.getElementById(i),v=i=>{const e=$(i);if(!e||e.value==='')return NaN;return parseFloat(String(e.value).replace(',','.'))},c=i=>!!($(i)&&$(i).checked),f=(x,d=0)=>isNaN(x)?'—':x.toFixed(d);
+const card=(k,t,b='')=>`<div class="v ${k}"><b>${t}</b>${b}</div>`,box=(t,b)=>`<div class="card"><h3>${t}</h3>${b}</div>`,ul=a=>'<ul>'+a.map(x=>`<li>${x}</li>`).join('')+'</ul>';
+const N=(i,l,u='')=>`<label>${l}<input id="${i}" inputmode="decimal" placeholder="${u}"></label>`;
+const CK=a=>a.map(x=>`<label class="ck"><input type="checkbox" id="${x[0]}"><span>${x[1]}</span></label>`).join('');
+const lvl=(s,d)=>(s>=180||d>=110)?4:(s>=160||d>=100)?3:(s>=140||d>=90)?2:(s>=120||d>=70)?1:0;
+const LN=['PA normale (< 120/70)','PA élevée, pas encore HTA (120–139 / 70–89)','HTA grade 1 (140–159 / 90–99)','HTA grade 2 (160–179 / 100–109)','HTA grade 3 (≥ 180 / ≥ 110)'];
+const egfr=(s,a,F)=>{const k=F?.7:.9,al=F?-.241:-.302;return 142*Math.pow(Math.min(s/k,1),al)*Math.pow(Math.max(s/k,1),-1.2)*Math.pow(.9938,a)*(F?1.012:1)};
+const cgf=(scr,a,kg,cm,F)=>(140-a)*kg/(72*scr)*(F?.85:1)*1.73/Math.sqrt(kg*cm/3600);
+const icScore=()=>{const J=['k_dpn','k_tj','k_cre','k_b3','k_cm','k_oap'].filter(c).length,n=['k_oed','k_dysp','k_hep','k_toux','k_tach','k_epl'].filter(c).length;return{M:J,m:n,p:J>=2||(J==1&&n>=2),poss:J==1||n>=2}};
+const S1=[['s_neuro','Céphalée sévère, confusion, convulsion, déficit neurologique'],['s_cor','Douleur thoracique ou dorsale brutale'],['s_dys','Dyspnée, œdème aigu du poumon'],['s_vis','Trouble visuel brutal'],['s_ren','Oligo-anurie, hématurie macroscopique'],['s_preg','Grossesse ≥ 20 SA ou post-partum']];
+const S2=[['q_brut','Début brutal ou aggravation rapide d’une HTA stable','Néphropathie ou sténose rénale : créatinine, bandelette urinaire, écho-Doppler rénal.'],
+['q_res','HTA résistante (≥ 3 classes dont un diurétique)','Éliminer la pseudo-résistance, puis hyperaldostéronisme primaire, SAHS, sténose rénale.'],
+['q_hk','Hypokaliémie spontanée (K⁺ < 3,5) ou sous faible dose de diurétique','Hyperaldostéronisme primaire : rapport aldostérone/rénine. Sans dosage : kaliurèse + test thérapeutique à la spironolactone.'],
+['q_par','Crises paroxystiques : céphalées + palpitations + sueurs','Phéochromocytome : métanéphrines plasmatiques ou urinaires, puis imagerie. Pas de bêtabloquant seul.'],
+['q_cush','Signes cushingoïdes (visage lunaire, vergetures, amyotrophie)','Cushing : cortisol libre urinaire ou freinage 1 mg ; d’abord éliminer une corticothérapie (y compris dermocorticoïdes, dépigmentants).'],
+['q_sas','Ronflements, apnées, somnolence diurne, cou large','SAHS : STOP-Bang / Epworth, polygraphie ; profil non-dipper à la MAPA.'],
+['q_ren','Souffle abdominal, OAP flash, ou créatinine ↑ > 30 % sous IEC/ARA2','Sténose des artères rénales : écho-Doppler, angio-scanner ou ARM ; arrêter le RAS si bilatérale suspectée.'],
+['q_coa','Pouls fémoraux faibles, PA bras/jambes discordantes','Coarctation aortique : PA aux 4 membres, échographie cardiaque.'],
+['q_neph','Hématurie, protéinurie, œdèmes, antécédent rénal','Néphropathie parenchymateuse : bandelette, ECBU, échographie rénale ; glomérulonéphrite à évoquer.'],
+['q_drug','Substances pressives : AINS, corticoïdes, œstroprogestatifs, décongestionnants, réglisse, ciclosporine, EPO, alcool, khat, cocaïne','Arrêt ou substitution, puis réévaluer à 2–4 semaines.']];
+const H=[['h_cad','Coronaropathie / post-infarctus'],['h_avc','AVC ou AIT'],['h_ic','Insuffisance cardiaque connue'],['h_aomi','Artériopathie des membres inférieurs'],['h_dm','Diabète connu'],['h_mrc','Maladie rénale chronique connue']];
+const FR=[['f_tab','Tabagisme'],['f_alc','Alcool excessif'],['f_sed','Sédentarité'],['f_fam','Antécédent familial cardiovasculaire précoce']];
+const EX=[['e_hvg','HVG à l’ECG ou à l’échographie'],['e_fevg','FEVG < 50 % à l’échographie'],['e_fa','Fibrillation atriale à l’ECG'],['e_isc','Onde Q / ischémie à l’ECG'],['e_ret','Rétinopathie hypertensive stade III–IV (fond d’œil)']];
+const CC1=[['k_dpn','Orthopnée ou dyspnée paroxystique nocturne'],['k_tj','Turgescence jugulaire / reflux hépato-jugulaire'],['k_cre','Crépitants pulmonaires bilatéraux'],['k_b3','Galop B3'],['k_cm','Choc de pointe étalé ou dévié (cardiomégalie clinique)'],['k_oap','Antécédent d’œdème aigu du poumon']];
+const CC2=[['k_oed','Œdèmes des membres inférieurs bilatéraux'],['k_dysp','Dyspnée d’effort'],['k_hep','Hépatomégalie'],['k_toux','Toux nocturne'],['k_tach','FC > 120/min'],['k_epl','Épanchement pleural'],['k_b4','Galop B4 / choc de pointe hyperdynamique'],['k_ang','Angor d’effort typique ou antécédent d’infarctus'],['k_irr','Pouls irrégulier (FA clinique)']];
+const CX=[['x_avc','AVC/AIT ou déficit neurologique focal'],['x_ccl','Claudication intermittente ou pouls pédieux abolis'],['x_nyc','Nycturie, urines mousseuses, œdèmes péri-orbitaires'],['x_vis','Baisse chronique de l’acuité visuelle']];
+const T4=[['t_noir','Origine africaine subsaharienne'],['t_preg','Grossesse, allaitement ou projet de grossesse'],['t_fra','Âge ≥ 80 ans ou patient fragile'],['t_ortho','Hypotension orthostatique (PAS −20 debout)'],['t_asth','Asthme ou BPCO sévère'],['t_brad','Bradycardie < 50/min ou bloc auriculo-ventriculaire'],['t_gout','Goutte / hyperuricémie'],['t_ang','Angiœdème sous IEC'],['t_toux','Toux sous IEC']];
+const TT=[['m_ras','IEC / ARA2'],['m_ccb','Inhibiteur calcique'],['m_dur','Diurétique thiazidique ou apparenté'],['m_bb','Bêtabloquant'],['m_mra','Spironolactone / éplérénone'],['m_obs','Observance vérifiée'],['m_ext','PA confirmée hors cabinet (AMT/MAPA)']];
+function conf(){const s=v('pas'),d=v('pad'),off=s>=140||d>=90,M=!isNaN(v('mps'))&&!isNaN(v('mpd')),A=!isNaN(v('ams'))&&!isNaN(v('amd'));
+ if(M||A){const hi=M?(v('mps')>=130||v('mpd')>=80):(v('ams')>=135||v('amd')>=85),src=M?'MAPA 24 h':'automesure';
+  if(off&&hi)return{st:'ok',t:'HTA confirmée ('+src+')'};if(off)return{st:'bb',t:'HTA de la blouse blanche probable ('+src+' normale)'};
+  if(hi)return{st:'ok',t:'HTA masquée ('+src+' élevée, cabinet < 140/90)'};return{st:'no'}}
+ if(!off)return{st:'no'};
+ if(v('pas2')>=140||v('pad2')>=90)return{st:'ok',t:'HTA confirmée : 2 consultations distinctes ≥ 140/90'};
+ const o=P();if(o.lv==4&&(o.hmod.length||o.cvd.length||o.ckd))return{st:'ok',t:'HTA grade 3 avec atteinte d’organe : diagnostic posé dès cette consultation'};
+ return{st:'?'}}
+function P(){const o={};o.s=v('pas');o.d=v('pad');o.age=v('age');o.F=$('sex').value=='F';o.lv=lvl(o.s,o.d);
+ const kg=v('kg'),cm=v('cm');o.bmi=kg/Math.pow(cm/100,2);o.tt=v('tt');o.obAb=o.tt>=(o.F?80:94);
+ const cr=v('cr'),u=$('cru').value,scr=isNaN(cr)?NaN:cr/(u=='u'?88.4:u=='m'?10:1);
+ o.crBad=!isNaN(scr)&&(scr<0.2||scr>15);const ok=!isNaN(scr)&&!isNaN(o.age)&&o.age>=18&&!o.crBad;
+ o.e21=ok?egfr(scr,o.age,o.F):NaN;o.cg=ok&&!isNaN(kg)&&!isNaN(cm)?cgf(scr,o.age,kg,cm,o.F):NaN;
+ o.egfr=($('frm').value=='cg'&&!isNaN(o.cg))?o.cg:o.e21;
+ o.k=v('k');o.gly=v('gly');o.ldl=v('ldl');if(isNaN(o.ldl)&&!isNaN(v('ct'))&&!isNaN(v('hdl'))&&!isNaN(v('tg'))&&v('tg')<=3.5)o.ldl=v('ct')-v('hdl')-v('tg')/5;
+ o.alb=v('rac')>=30||['1','2'].includes($('band').value);o.icS=icScore();
+ o.ic=c('h_ic')||o.icS.p;o.cad=c('h_cad')||c('k_ang')||c('e_isc');o.fa=c('e_fa')||c('k_irr');o.avc=c('h_avc')||c('x_avc');o.aomi=c('h_aomi')||c('x_ccl');
+ const hv=c('k_cm')||c('k_b4'),hp=v('sok')>35||c('e_hvg')||v('ict')>50;o.hvg=hv||hp;o.hmod=[];
+ if(hv)o.hmod.push('HVG/cardiomégalie (clinique)');if(hp)o.hmod.push('HVG/cardiomégalie (paraclinique)');if(c('x_nyc'))o.hmod.push('atteinte rénale (clinique)');
+ if(o.egfr<60)o.hmod.push('DFGe < 60 (à confirmer à 3 mois)');if(o.alb)o.hmod.push('albuminurie');if(c('e_ret'))o.hmod.push('rétinopathie');if(c('x_vis'))o.hmod.push('baisse visuelle (clinique)');
+ o.cvd=[];if(o.ic)o.cvd.push('insuffisance cardiaque');if(o.cad)o.cvd.push('coronaropathie');if(o.avc)o.cvd.push('AVC/AIT');if(o.aomi)o.cvd.push('AOMI');
+ o.dm=c('h_dm')||o.gly>=1.26;o.ckd=c('h_mrc')||o.egfr<60;
+ o.rf=[];if(o.F?o.age>=65:o.age>=55)o.rf.push('âge');FR.forEach(x=>c(x[0])&&o.rf.push(x[1].toLowerCase()));if(o.ldl>=1.16)o.rf.push('LDL ≥ 1,16 g/L');if(o.bmi>=30)o.rf.push('obésité');if(o.obAb)o.rf.push('obésité abdominale');
+ return o}
+function risk(o){const n=o.hmod.length,r=o.rf.length;
+ if(o.cvd.length||o.egfr<30||(o.dm&&n))return[3,'très élevé'];
+ if(n||o.dm||o.egfr<60||o.lv>=4||r>=3)return[2,'élevé'];
+ if(r>=1||o.lv>=3)return[1,'modéré'];return[0,'faible']}
+function gauge(){const X=d=>34+(Math.min(130,Math.max(40,d))-40)/90*250,Y=s=>226-(Math.min(220,Math.max(90,s))-90)/130*206;
+ const Z=[[130,220,'#e48a85'],[110,180,'#f0b8a0'],[100,160,'#f6d9a8'],[90,140,'#f3ebc4'],[70,120,'#cfe8dc']];
+ let h=Z.map(z=>`<rect x="34" y="${Y(z[1])}" width="${X(z[0])-34}" height="${226-Y(z[1])}" fill="${z[2]}"/>`).join('');
+ for(let s=100;s<=220;s+=20)h+=`<text x="2" y="${Y(s)+4}" font-size="10" fill="#5b6776">${s}</text>`;for(let d=50;d<=130;d+=20)h+=`<text x="${X(d)-8}" y="242" font-size="10" fill="#5b6776">${d}</text>`;
+ const s=v('pas'),d=v('pad');if(!isNaN(s)&&!isNaN(d))h+=`<circle cx="${X(d)}" cy="${Y(s)}" r="7" fill="#16202e" stroke="#fff" stroke-width="2"/>`;$('gz').innerHTML=h}
+function v1(){gauge();const s=v('pas'),d=v('pad');let h='';
+ const bmi=v('kg')/Math.pow(v('cm')/100,2);
+ if(isNaN(s)||isNaN(d)){$('vd').innerHTML=card('b','Saisir la PA','Le verdict s’affiche dès que PAS et PAD sont renseignées.');return}
+ const L=lvl(s,d),sym=S1.slice(0,5).some(x=>c(x[0]));
+ if(c('s_preg')&&(s>=160||d>=110))h+=card('r','Prééclampsie sévère possible','PA ≥ 160/110 en grossesse/post-partum : urgence obstétricale.<br><button class="p" onclick="go(\'pu\')">Ouvrir Urgences</button>');
+ else if(L==4&&sym)h+=card('r','Urgence hypertensive probable','PA ≥ 180/110 avec signe d’atteinte d’organe aiguë : hospitaliser, traitement IV.<br><button class="p" onclick="go(\'pu\')">Ouvrir Urgences</button>');
+ else if(L==4)h+=card('a','Poussée hypertensive / HTA grade 3','Pas d’atteinte aiguë déclarée : rechercher une atteinte d’organe (bandelette urinaire, créatinine, ECG, fond d’œil), reprise du traitement oral, pas de baisse brutale. Consultation sous 24–72 h.');
+ h+=card(L>=2?'a':L==1?'b':'g',LN[L],(s>=140&&d<90?'Systolique isolée. ':'')+(d>=90&&s<140?'Diastolique isolée. ':'')+'Mesure de la consultation.');
+ const cf=conf();
+ if(cf.st=='ok')h+=card('r',cf.t,'Poursuivre : causes secondaires, bilan, phénotypage.');
+ else if(cf.st=='bb')h+=card('b',cf.t,'MHD, surveillance annuelle par AMT/MAPA ; traiter si atteinte d’organe ou risque très élevé.');
+ else if(cf.st=='?')h+=card('a','À confirmer avant le diagnostic','Sans AMT/MAPA (cas fréquent) : confirmer par des consultations répétées. '+(L==4?'Sous quelques jours.':L==3?'Sous 1–2 semaines.':'Sous 2–4 semaines (jusqu’à 3 mois si risque faible).')+' Saisir la 2ᵉ consultation ci-contre.');
+ else h+=card('g','Pas d’HTA à ce stade','Conseils d’hygiène de vie et contrôle périodique.');
+ if(!isNaN(bmi))h+=`<p class="note">IMC ${f(bmi,1)} kg/m²${bmi>=30?' — obésité':bmi>=25?' — surpoids':''}</p>`;
+ $('vd').innerHTML=h}
+function v2(){let h='';const a=S2.filter(x=>c(x[0])),age=v('age');
+ if(age<40&&!c('q_obes'))a.unshift(['','Âge < 40 ans','Bilan de cause secondaire systématique : néphropathie en premier (créatinine, bandelette, échographie), coarctation, dysplasie fibromusculaire, forme monogénique.']);
+ if(a.length)h=box('Conduite proposée',a.map(x=>card(x[0]=='q_res'||x[0]=='q_par'?'a':'b',x[1],x[2])).join(''));
+ else h=card('g','Aucune orientation secondaire','Le bilan de base suffit (étape 3).');
+ $('o2').innerHTML=h}
+function v3(){const o=P(),R=risk(o),ic=o.icS;let cl='',kv=(a,b)=>`<div class="kv"><span>${a}</span><b>${b}</b></div>`;
+ cl+=ic.p?card('r','Insuffisance cardiaque cliniquement probable','Framingham : '+ic.M+' majeur(s), '+ic.m+' mineur(s). Traiter comme IC ; ECG, radio, écho (FE) dès que possible.'):ic.poss?card('a','Insuffisance cardiaque possible','Framingham incomplet ('+ic.M+' majeur, '+ic.m+' mineurs) : compléter l’examen, radio thorax, écho.'):card('g','Pas de signe clinique d’insuffisance cardiaque','Sous réserve d’un examen cardio-pulmonaire complet.');
+ if(c('k_cm')||c('k_b4'))cl+=card('a','HVG / cardiomégalie probable','Retenue comme atteinte d’organe cible sans attendre ECG ou écho.');
+ if(o.fa)cl+=card('a','Arythmie / FA probable','ECG pour confirmer ; évaluer le risque embolique (CHA₂DS₂-VASc).');
+ if(o.cad)cl+=card('a','Coronaropathie probable','Angor d’effort, infarctus ou ischémie ECG : bêtabloquant et prévention secondaire.');
+ const st=isNaN(o.egfr)?'':o.egfr>=90?'G1':o.egfr>=60?'G2':o.egfr>=45?'G3a':o.egfr>=30?'G3b':o.egfr>=15?'G4':'G5';
+ let h=kv('IMC / tour de taille',f(o.bmi,1)+' / '+f(o.tt)+(o.obAb?' · abdominale':''))+kv('DFGe retenu',isNaN(o.egfr)?'—':f(o.egfr)+' mL/min/1,73 m² · '+st)+kv('CKD-EPI 2021',f(o.e21))+kv('Cockcroft-Gault (normalisé)',f(o.cg))+kv('LDL-c (mesuré ou Friedewald)',f(o.ldl,2)+' g/L')+kv('Glycémie',isNaN(o.gly)?'—':o.gly>=1.26?f(o.gly,2)+' g/L · diabète probable (à confirmer)':o.gly>=1?f(o.gly,2)+' g/L · hyperglycémie modérée':f(o.gly,2)+' g/L · normale')+kv('Kaliémie',isNaN(o.k)?'—':o.k<3.5?f(o.k,1)+' · hypokaliémie':o.k>5?f(o.k,1)+' · hyperkaliémie':f(o.k,1));
+ let w='';if(o.crBad)w+=card('r','Créatinine improbable','Valeur incompatible avec l’unité choisie : vérifier µmol/L, mg/L ou mg/dL. DFG non calculé.');
+ if(!isNaN(o.e21)&&!isNaN(o.cg)&&Math.abs(o.e21-o.cg)>15)w+=card('a','Écarts entre formules','CKD-EPI et Cockcroft-Gault divergent de plus de 15 mL/min (maigreur, obésité, âge extrême). Le Jaffé non calibré surestime la créatinine : DFG sous-estimé.');
+ let m=[];isNaN(o.gly)&&m.push('glycémie');(isNaN(v('rac'))&&$('band').value=='')&&m.push('bandelette urinaire');isNaN(o.egfr)&&m.push('créatinine');isNaN(o.k)&&m.push('K⁺');(isNaN(v('ict'))&&isNaN(v('sok'))&&!c('e_hvg'))&&m.push('radio thorax, ECG, écho');isNaN(o.ldl)&&m.push('bilan lipidique');
+ const k=card(R[0]>=2?'r':R[0]==1?'a':'g','Risque cardiovasculaire '+R[1],'Facteurs : '+(o.rf.length?o.rf.join(', '):'aucun')+'. Atteintes : '+(o.hmod.length?o.hmod.join(', '):'aucune retrouvée')+(m.length>3?'. Peu de paraclinique : risque probablement sous-estimé.':'.'));
+ $('o3').innerHTML=card('b','Évaluation clinique','')+cl+k+box('Valeurs paracliniques',h)+w+(m.length?card('a','À obtenir, par ordre de rentabilité',m.join(', ')):'')}
+function v4(){const o=P();let h='',ph=[];
+ if(o.age<40)ph.push(['a','HTA du sujet jeune','Secondaire jusqu’à preuve du contraire (étape 2).']);
+ if(o.s>=140&&o.d<90&&o.age>=65)ph.push(['b','HTA systolique isolée du sujet âgé','Rigidité artérielle : inhibiteur calcique + diurétique thiazidique-like.']);
+ if(o.obAb||o.bmi>=30)ph.push(['b','HTA à profil métabolique','Rechercher diabète, dyslipidémie, SAHS ; éviter bêtabloquant + thiazidique à forte dose.']);
+ if(c('t_noir'))ph.push(['b','HTA du sujet africain','Inhibiteurs calciques et diurétiques très efficaces ; IEC/ARA2 en association ; sel.']);
+ if(o.ic||o.hvg)ph.push(['r',o.ic?'HTA avec insuffisance cardiaque':'HTA avec retentissement cardiaque','Bloqueurs du SRA ± bêtabloquant ; typer la FE dès que l’écho est possible.']);
+ if(o.fa)ph.push(['a','HTA avec FA','Contrôle de la fréquence ; anticoagulation selon le risque.']);
+ if(o.alb||c('x_nyc')||o.ckd)ph.push(['a','HTA avec atteinte rénale','Bloqueur du SRA ; K⁺ et créatinine à 1–2 semaines.']);
+ const res=c('m_ras')&&c('m_ccb')&&c('m_dur')&&(o.s>=140||o.d>=90),ds=v('mds'),ns=v('mns');
+ if(res)ph.push(['a','HTA résistante possible','Vérifier : '+(c('m_obs')?'':'observance, ')+(c('m_ext')?'':'mesure hors cabinet, ')+'technique, AINS, sel, SAHS, cause secondaire ; puis spironolactone (étape 5).']);
+ else if(['m_ras','m_ccb','m_dur','m_bb','m_mra'].filter(c).length)ph.push(['b','Traitement en cours','L’étape 5 propose la suite logique.']);
+ let pc='';if(!isNaN(ds)&&!isNaN(ns)){const p=(ds-ns)/ds*100;pc=card(p<10?'a':'b',p<0?'Profil riser (PA nocturne > diurne)':p<10?'Profil non-dipper ('+f(p)+' %)':p<=20?'Profil dipper ('+f(p)+' %)':'Dipper extrême ('+f(p)+' %)',p<10?'Chercher SAHS, maladie rénale, dysautonomie, excès de sel ; risque cardiovasculaire majoré.':'Baisse nocturne conservée.')}
+ $('o4').innerHTML=card('b','Phénotype clinique','')+(ph.length?ph.map(x=>card(x[0],x[1],x[2])).join(''):card('b','Aucun phénotype particulier','Renseigner le terrain ci-contre.'))+(pc?card('b','Phénotype paraclinique','')+pc:'')}
+const PR={ras:{ar:'Irbesartan Biogaran 150 mg (ou Losar-Denk 50 mg, Telmikaa 40 mg, Tareg 80 mg), 1 cp/j',iec:'Coversyl 5 mg (ou Ramipril Biogaran 5 mg, Enalapril Biogaran 5–20 mg, Captopril-Denk 25 mg ×2–3/j), 1 cp/j'},
+icc:'Amlodipine 5 mg (Amep, Amlo-Denk, Amlodipine Vir, Lopine), 1 cp/j, 10 mg si besoin',dur:'Fludex LP 1,5 mg (ou Adex 2,5 mg, Esidrex 25 mg), 1 cp le matin',bb:'Bisoprolol 2,5–5 mg (ou Nebilus/nébivolol 5 mg), 1 cp/j',
+'ras+icc':{ar:'Raasar-AM 50/5 (ou Zyltan AM 50/5, Sartex 5/160, Telmis-A 40/5, Telmikaa AM 40/5), 1 cp/j',iec:'Serperam 5/5 (périndopril/amlodipine), jusqu’à 10/10, 1 cp/j'},
+'ras+dur':{ar:'Coaprozar 150/12,5 (ou Co-Losar 50/12,5, Telmis-H 40/12,5, Cotareg 160/25), 1 cp/j',iec:'Serderax 5/1,25 (périndopril/indapamide) ou Ramithiazide 5/12,5, 1 cp/j'},
+'icc+dur':'Natrixam 1,5/5 (ou Amlopamide 5/1,5), 1 cp/j','ras+icc+dur':{ar:'Sartex HCT 5/160/12,5 (ou Cardiovalam H), 1 cp/j',iec:'Serinxam 5/1,25/5 (périndopril/indapamide/amlodipine), 1 cp/j'},
+'ras+bb':{ar:'Irbesartan Biogaran 150 mg (ou Losar-Denk 50 mg, Telmikaa 40 mg) + Bisoprolol 2,5–5 mg : aucune association ARA2-bêtabloquant listée',iec:'Cosyrel 5/5 (périndopril/bisoprolol), 1 cp/j'}};
+const rx=(k,K)=>{const x=PR[k];return typeof x=='string'?x:x[K]};
+function plan(){const o=P(),cf=conf(),R=risk(o);
+ if(isNaN(o.s)||isNaN(o.d))return card('b','Étape 1 incomplète','Saisir la PA.');
+ const preg=c('t_preg')||c('s_preg'),fra=c('t_fra')||o.age>=80,A=c('t_ang')||c('t_toux')||c('t_noir'),ras=A?'ARA2':'IEC ou ARA2',K=A?'ar':'iec',bbok=!(c('t_asth')||c('t_brad')),th=(c('t_gout')||o.k<3.5)?null:'thiazidique-like (indapamide)';
+ let out='',now=false,late=false;
+ if(cf.st=='no')return card('b',o.lv==1?'PA élevée, non HTA':'Pas d’HTA','MHD ; recontrôle annuel. Traitement à discuter seulement si risque élevé/très élevé et PA ≥ 130/80 persistante.')+hmd();
+ if(cf.st=='bb')return card('b','HTA de la blouse blanche','MHD, surveillance annuelle (AMT/MAPA) ; traitement si atteinte d’organe ou risque très élevé.')+hmd();
+ if(cf.st=='?'&&!(o.lv==4&&(o.hmod.length||o.cvd.length||o.ckd)))out+=card('a','HTA non confirmée','Confirmer d’abord (étape 1) avant tout traitement.');
+ else if(o.lv==2&&R[0]<=1&&!o.hmod.length&&!preg){late=true;out+=card('b','Grade 1, risque '+R[1],'MHD intensifs 3 mois (jusqu’à 6 si risque faible), puis traitement si PA ≥ 140/90 persistante.')}
+ else{now=true;out+=card('r','Traitement médicamenteux indiqué',LN[o.lv]+', risque '+R[1]+(o.hmod.length?', atteinte d’organe : '+o.hmod.join(', '):'')+'.')}
+ if(!now&&!late)return out;
+ let reg,ck,ex=[],rxl=[];
+ if(preg){reg='méthyldopa, nifédipine retard (ou nicardipine)';rxl.push('Méthyldopa-GH 500 mg : 250–500 mg ×2–3/j','Nifedi-Denk retard 20 mg : 1 cp ×2/j (alternative)','Labétalol : non listé');ex.push('IEC, ARA2 et spironolactone contre-indiqués (femme en âge de procréer sans contraception : les éviter) ; seuil ≥ 140/90, cible 110–135/85 ; aspirine 100–150 mg dès 12 SA et calcium si risque de prééclampsie.')}
+ else{
+  if(o.ic){reg=ras+' + bêtabloquant + spironolactone, diurétique de l’anse si congestion';ck=bbok?'ras+bb':'ras';rxl.push('Ajouter : Spironolactone Biogaran 50 mg (25–50 mg/j) ; Furosémide Biogaran 40 mg si congestion');ex.push('IC probable cliniquement : typer la FE dès que possible ; si FE conservée, le bêtabloquant n’est plus d’office.')}
+  else if(o.cad){reg=bbok?ras+' + bêtabloquant cardiosélectif':ras+' + inhibiteur calcique';ck=bbok?'ras+bb':'ras+icc'}
+  else if(o.fa){reg=bbok?ras+' + bêtabloquant (fréquence)':ras+' + inhibiteur calcique';ck=bbok?'ras+bb':'ras+icc'}
+  else if(o.s>=140&&o.d<90&&o.age>=65){reg='inhibiteur calcique + '+(th?'diurétique '+th:ras);ck=th?'icc+dur':'ras+icc'}
+  else if(o.avc){reg=ras+' + '+(th?'diurétique '+th:'inhibiteur calcique');ck=th?'ras+dur':'ras+icc'}
+  else{reg=ras+' + inhibiteur calcique'+(th?' (ou diurétique '+th+')':'');ck='ras+icc'}
+  if(o.egfr<30)ex.push('DFGe < 30 : furosémide plutôt que thiazidique ; RAS avec prudence, K⁺ et créatinine à 1 semaine.');
+  if(o.dm&&o.ckd)ex.push('MRC diabétique : ajouter iSGLT2, ± finérénone (K⁺ ≤ 4,8, DFGe ≥ 25) si disponibles.');
+  if(o.k>5)ex.push('K⁺ > 5 : différer RAS et MRA, rechercher la cause.');
+  const mono=fra||c('t_ortho')||(o.lv==2&&R[0]==0&&o.s<150);
+  if(mono){ck=(o.age>=65||c('t_noir'))?'icc':'ras';reg='monothérapie progressive (demi-dose)'}
+  rxl.unshift((mono?'Monothérapie : ':'Bithérapie : ')+rx(ck,K));
+  if(!mono&&!o.ic)rxl.push('Étape 2 (PA > cible à 3–4 sem.) : '+rx('ras+icc+dur',K),'Étape 3 (résistance) : + Spironolactone Biogaran 50 mg, 25–50 mg/j');
+ }
+ out+=box('Stratégie et ordonnance (produits de la liste)',card('b','Choix thérapeutique',reg)+ul(rxl)+ul(ex));
+ const av=[];if(!preg){av.push('IEC + ARA2 ensemble : jamais');if(c('t_asth'))av.push('bêtabloquant (asthme/BPCO sévère)');if(c('t_brad'))av.push('bêtabloquant, diltiazem, vérapamil (bradycardie/BAV)');if(c('t_gout'))av.push('thiazidiques (goutte) ; losartan favorable');if(o.k<3.5)av.push('thiazidiques et furosémide (hypokaliémie) ; chercher un hyperaldostéronisme');if(c('t_ang'))av.push('IEC (angiœdème) ; ARA2 avec prudence');if(c('t_toux'))av.push('IEC : passer à un ARA2');if(o.dm||o.bmi>=30||o.obAb)av.push('bêtabloquant + thiazidique à forte dose (risque métabolique)')}
+ if(av.length)out+=box('À éviter chez ce patient',ul(av));
+ out+=box('Cible et suivi',ul([preg?'PA 110–135/85':(fra?'PAS 130–139 ; éviter PAS < 120 et l’hypotension orthostatique':'PAS 120–129 mmHg si bien toléré (minimum < 140) ; PAD 70–79'),'Réévaluer à 2–4 semaines, puis tous les 3 mois jusqu’à la cible, ensuite tous les 6 mois ; AMT à domicile.','Créatinine et K⁺ 1–2 semaines après RAS, diurétique ou MRA ; si créatinine ↑ > 30 % ou K⁺ > 5,5 : arrêter et chercher une sténose rénale.']));
+ const miss=['m_ras','m_ccb','m_dur'].filter(x=>!c(x)).map(x=>({m_ras:'IEC/ARA2',m_ccb:'inhibiteur calcique',m_dur:'diurétique thiazidique-like'})[x]);
+ if(c('m_ras')||c('m_ccb')||c('m_dur')||c('m_bb')){const t=c('m_ras')&&c('m_ccb')&&c('m_dur')&&(o.s>=140||o.d>=90);
+  out+=box('Adaptation du traitement en cours',t?card('a','HTA résistante possible','Après vérification (observance, mesure hors cabinet, AINS, sel, SAHS) : <b>spironolactone 25–50 mg/j</b> (Spironolactone Biogaran 50 mg ; K⁺ et créatinine à 1 semaine ; éviter si DFGe < 30 ou K⁺ > 4,5–5). Sinon bêtabloquant (bisoprolol). Chercher une cause secondaire et référer.'):miss.length&&(o.s>=140||o.d>=90)?card('b','Étape suivante','Non contrôlée : optimiser les doses puis ajouter '+miss[0]+' (trithérapie en un comprimé : '+rx('ras+icc+dur',K)+').'):card('g','Poursuivre','Si PA à la cible : continuer et surveiller.'))}
+ const tg=[1.16,1.00,0.70,0.55][R[0]];
+ out+=box('Prévention associée',ul([R[0]>=2?`Statine d’emblée (famille non transmise), cible LDL-c < ${tg.toFixed(2)} g/L.`:`Statine selon le risque global ; cible LDL-c < ${tg.toFixed(2)} g/L.`,'Aspirine seulement en prévention secondaire (maladie CV établie).','Arrêt du tabac, alcool minimal, activité physique 30 min/j.']));
+ return out+hmd()+'<p class="note">Aide à la décision basée sur ESC/ESH ; elle ne remplace pas le jugement clinique ni le protocole du service.</p>'}
+const hmd=()=>box('Hygiène de vie',ul(['Sel < 5 g/j : réduire sel de cuisson, bouillons cubiques, poissons fumés ou salés, aliments transformés.','Plus de légumes, fruits, légumineuses ; potassium alimentaire sauf MRC avancée ou hyperkaliémie.','Poids (IMC 18,5–24,9), tour de taille, marche rapide 30 min/j.','Alcool limité, arrêt complet du tabac.']));
+const U=[['Poussée hypertensive (sans atteinte d’organe)','Repos au calme 30 min, remesure. Per os : amlodipine 5–10 mg (Amep, Amlo-Denk, Lopine…), ou captopril 25 mg (Captopril-Denk, répétable à 1 h), ou nicardipine 20 mg (Loxen 20). Baisse progressive sur 24–72 h, reprise ou optimisation du traitement de fond. <b>Pas de nifédipine sublinguale</b>, pas de baisse brutale. Consultation sous 24–72 h.'],
+['Principe de l’urgence (PA ≥ 180/110 + atteinte aiguë)','Hospitalisation, voie IV. Baisse de la PAM ≤ 25 % en 1 h, puis ~160/100 en 2–6 h, puis normalisation en 24–48 h. Exceptions : dissection, AVC, éclampsie.'],
+['Nicardipine IV (Loxen 10 mg/10 mL) : seul injectable antihypertenseur de la liste','Débuter 5 mg/h, +2,5 mg/h toutes les 5–15 min selon la PA, max 15 mg/h, puis 3 mg/h d’entretien. Sans pousse-seringue : 10 mg dans 250 mL de G5 % (40 µg/mL) ; 2,5 mg/h ≈ 21 gouttes/min, 5 mg/h ≈ 42 gouttes/min (perfuseur 20 gttes/mL). Au-delà de 7,5 mg/h le goutte-à-goutte devient imprécis. PA toutes les 5 min, une personne dédiée. Éviter si SCA, sténose aortique serrée.'],
+['Encéphalopathie hypertensive','Nicardipine IV (ci-dessus). Scanner cérébral pour éliminer un AVC.'],
+['Œdème aigu du poumon hypertensif','Position assise, O₂. Nicardipine IV si la PA reste élevée. Furosémide injectable et dérivés nitrés non listés : à utiliser s’ils existent dans le service.'],
+['Syndrome coronarien aigu / dissection aortique','Nitrés et bêtabloquants IV non listés : transfert en urgence. Dissection : PAS < 120 et FC < 60 en 20 min, chirurgie.'],
+['AVC','Ischémique : ne traiter que si > 220/120 (ou > 185/110 avant thrombolyse), baisse ~15 % en 24 h. Hémorragique : viser PAS 130–150 par nicardipine IV, éviter une chute > 70 mmHg.'],
+['Prééclampsie sévère / éclampsie','PA ≥ 160/110 : nicardipine IV, ou nicardipine orale 20 mg à défaut ; sulfate de magnésium (4 g IV en 15–20 min puis 1 g/h), non listé mais indispensable ; extraction fœtale selon terme. IEC/ARA2 proscrits.'],
+['Phéochromocytome / sympathomimétiques','Aucun produit adapté listé (phentolamine, urapidil) : transfert. Nicardipine IV en attendant ; pas de bêtabloquant seul.']];
+const ML=`#ARA II (sartans)
+APROZAR 300 mg|irbésartan|30
+IRBESARTAN BIOGARAN 75 mg|irbésartan|30
+IRBESARTAN BIOGARAN 150 mg|irbésartan|30
+IRBESARTAN BIOGARAN 300 mg|irbésartan|30
+LOSAR 50 mg|losartan|30
+LOSAR-DENK 25 mg|losartan|28
+LOSAR-DENK 50 mg|losartan|28
+LOSAR-DENK 100 mg|losartan|30
+RAASAR 50 mg|losartan|30
+ZYLTAN 50 mg|losartan|30
+TAREG 80 mg|valsartan|28
+TELMIKAA 40 mg|telmisartan|30
+TELOD 80 mg|telmisartan|30
+#Antihypertenseur central
+METHYLDOPA-GH 500 mg|méthyldopa|30
+#Associations fixes
+AMLOPAMIDE 5/1,5 mg|amlodipine/indapamide|30
+NATRIXAM 1,5/5 mg LM|amlodipine/indapamide|30
+NATRIXAM 1,5/10 mg LM|amlodipine/indapamide|30
+AMLOTEL 10/40 mg|amlodipine/telmisartan|30
+TELMIKAA AM 40/5 mg|amlodipine/telmisartan|30
+TELMIS-A 40/5 mg|amlodipine/telmisartan|28
+TELMIS-A 80/5 mg|amlodipine/telmisartan|28
+RAASAR-AM 5/50 mg|amlodipine/losartan|30
+ZYLTAN AM 50/5 mg|amlodipine/losartan|30
+SARTEX 5/160 mg|amlodipine/valsartan|30
+SARTEX 10/160 mg|amlodipine/valsartan|30
+SERPERAM 5/5 mg|amlodipine/périndopril|30
+SERPERAM 5/10 mg|amlodipine/périndopril|30
+SERPERAM 10/5 mg|amlodipine/périndopril|30
+SERPERAM 10/10 mg|amlodipine/périndopril|30
+SERDERAX 5/1,25 mg|indapamide/périndopril|30
+SERDERAX 10/2,5 mg|indapamide/périndopril|30
+SERINXAM 5/1,25/5 mg|amlodipine/indapamide/périndopril|30
+SARTEX HCT 5/160/12,5 mg|amlodipine/HCTZ/valsartan|30
+SARTEX HCT 5/160/25 mg|amlodipine/HCTZ/valsartan|30
+SARTEX HCT 10/160/12,5 mg|amlodipine/HCTZ/valsartan|30
+SARTEX HCT 10/160/25 mg|amlodipine/HCTZ/valsartan|30
+CARDIOVALAM H 10/25/160 mg|amlodipine/HCTZ/valsartan|30
+COSYREL 5/5 mg|bisoprolol/périndopril|30
+COAPROZAR 150/12,5 mg|HCTZ/irbésartan|30
+COAPROZAR 300/12,5 mg|HCTZ/irbésartan|30
+COAPROZAR 300/25 mg|HCTZ/irbésartan|30
+IRBESARTAN/HCTZ BIOGARAN 150/12,5 mg|HCTZ/irbésartan|30
+IRBESARTAN/HCTZ BIOGARAN 300/12,5 mg|HCTZ/irbésartan|30
+IRBESARTAN/HCTZ BIOGARAN 300/25 mg|HCTZ/irbésartan|30
+CO-LOSAR 50/12,5 mg|HCTZ/losartan|30
+COLOSAR-DENK 50/12,5 mg|HCTZ/losartan|28
+COLOSAR-DENK 100/12,5 mg|HCTZ/losartan|28
+HYZAAR 50/12,5 mg|HCTZ/losartan|28
+RAASAR-H 50/12,5 mg|HCTZ/losartan|30
+ZYLTAN H 50/12,5 mg|HCTZ/losartan|30
+COTAREG 160/25 mg|HCTZ/valsartan|28
+TELMIKAA H 40/12,5 mg|HCTZ/telmisartan|30
+TELMIS-H 40/12,5 mg|HCTZ/telmisartan|28
+TELMIS-H 80/12,5 mg|HCTZ/telmisartan|28
+TELMIS-H 80/25 mg|HCTZ/telmisartan|28
+CAPTOPRIL+HCT DENK 50/25 mg|captopril/HCTZ|30 ou 100
+CARDIURINE 50/25 mg|captopril/HCTZ|30
+ENA+HCT-DENK 20/12,5 mg|énalapril/HCTZ|30
+ENALAPRIL HTZ VIR 20/12,5 mg|énalapril/HCTZ|28
+ENALAPRIL/HCTZ BIOGARAN 20/12,5 mg|énalapril/HCTZ|28
+CORAPRIL 5/25 mg|HCTZ/ramipril|30
+RAMITHIAZIDE 5/12,5 mg|HCTZ/ramipril|30
+TRITAZIDE 5/12,5 mg|HCTZ/ramipril|28
+BISOPROLOL/HCTZ BIOGARAN 2,5/6,25 mg|bisoprolol/HCTZ|30
+BISOPROLOL/HCTZ BIOGARAN 5/6,25 mg|bisoprolol/HCTZ|30
+BISOPROLOL/HCTZ BIOGARAN 10/6,25 mg|bisoprolol/HCTZ|30
+HCTZ/NEBIVOLOL BIOGARAN 12,5/5 mg|HCTZ/nébivolol|30
+HCTZ/NEBIVOLOL 25/5 mg|HCTZ/nébivolol|30
+TENORETIC 50/12,5 mg|aténolol/chlortalidone|30
+#Bêtabloquants
+BISOPROLOL 2,5 mg|bisoprolol|30
+BISOPROLOL 5 mg|bisoprolol|30
+BISOPROLOL 10 mg|bisoprolol|30
+BISOPROLOL FIZA 5 mg|bisoprolol|30
+BISOPROLOL FIZA 10 mg|bisoprolol|30
+NEBILUS 5 mg|nébivolol|30
+NEBIVOLOL BIOGARAN 5 mg|nébivolol|30
+ATENOLOL-DENK 50 mg|aténolol|100
+TENSICARD 50 mg|aténolol|30
+BLOKIUM 100 mg|aténolol|15
+XYTENOL 100 mg|aténolol|28
+LOPRESSOR LP 200 mg|métoprolol|30
+PROPRANOLOL BIOGARAN 40 mg|propranolol|50
+#Diurétiques
+FLUDEX LP 1,5 mg|indapamide|30
+ADEX 2,5 mg|indapamide|30
+ESIDREX 25 mg|hydrochlorothiazide|20
+FUROSEMIDE BIOGARAN 40 mg|furosémide|30
+SPIRONOLACTONE BIOGARAN 50 mg|spironolactone|30
+SPIRONOLACTONE BIOGARAN 75 mg|spironolactone|30
+#IEC
+CAPTOPRIL-DENK 25 mg|captopril|20 ou 100
+COVERSYL 5 mg|périndopril|30
+COVERSYL 10 mg|périndopril|30
+ENALAPRIL BIOGARAN 5 mg|énalapril|28
+ENALAPRIL BIOGARAN 20 mg|énalapril|28
+ENALAPRIL VIR 20 mg|énalapril|28
+RAMIPRIL BIOGARAN 1,25 mg|ramipril|30
+RAMIPRIL BIOGARAN 5 mg|ramipril|30
+RAMIPRIL GH 5 mg|ramipril|30
+RAPRIL 10 mg|ramipril|30
+#Inhibiteurs calciques
+AMEP 5 mg|amlodipine|28
+AMLO-DENK 5 mg|amlodipine|50
+AMLO-DENK 10 mg|amlodipine|50
+AMLODIPINE VIR 5 mg|amlodipine|30
+AMLODIPINE VIR 10 mg|amlodipine|30
+AMLODIS 10 mg|amlodipine|30
+AMLOTROY 10 mg|amlodipine|30
+LOPINE 5 mg|amlodipine|30
+LOPINE 10 mg|amlodipine|30
+AMLONEX-AT 5/50 mg|amlodipine/aténolol (selon le dosage)|100
+TENSICARD AM 50/5 mg|aténolol/amlodipine|—
+LOXEN 20 mg|nicardipine|30
+LOXEN LP 50 mg|nicardipine|60
+LOXEN 10 mg/10 mL inj.|nicardipine IV|5 amp.
+NIFEDI-DENK RETARD 10 mg|nifédipine LP|100
+NIFEDI-DENK RETARD 20 mg|nifédipine LP|30 ou 100`;
+let MR=[],cf0='';ML.split('\n').forEach(l=>{if(l[0]=='#')cf0=l.slice(1);else{const a=l.split('|');MR.push([cf0,a[0],a[1],a[2]])}});
+function mt(){const q=$('q').value.toLowerCase();$('mt').innerHTML='<tr><th>Famille</th><th>Spécialité</th><th>DCI</th><th>Boîte</th></tr>'+MR.filter(r=>r.join(' ').toLowerCase().includes(q)).map(r=>'<tr>'+r.map(x=>`<td>${x}</td>`).join('')+'</tr>').join('')}
+const PG=[['p1','1 Mesures'],['p2','2 Causes'],['p3','3 Bilan'],['p4','4 Terrain'],['p5','5 Prise en charge'],['pu','Urgences'],['pm','Médicaments']];
+function go(id){document.querySelectorAll('.pg').forEach(e=>e.classList.toggle('on',e.id==id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.p==id));refresh();scrollTo(0,0)}
+function refresh(){v1();v2();v3();v4();if($('p5').classList.contains('on'))$('o5').innerHTML='<h2>5 · Prise en charge personnalisée</h2>'+plan()}
+$('nav').innerHTML=PG.map(p=>`<button data-p="${p[0]}" onclick="go('${p[0]}')">${p[1]}</button>`).join('');
+$('f1').innerHTML=N('pas','PAS cabinet','mmHg')+N('pad','PAD cabinet','mmHg')+N('pas2','PAS 2ᵉ consultation','mmHg')+N('pad2','PAD 2ᵉ consultation','mmHg')+N('ams','PAS automesure','≥ 135')+N('amd','PAD automesure','≥ 85')+N('mps','PAS moy. MAPA 24 h','≥ 130')+N('mpd','PAD moy. MAPA 24 h','≥ 80')+N('age','Âge','ans')+`<label>Sexe<select id="sex"><option value="M">Homme</option><option value="F">Femme</option></select></label>`+N('kg','Poids','kg')+N('cm','Taille','cm')+N('tt','Tour de taille','cm');
+$('c1').innerHTML=CK(S1);$('c2').innerHTML=CK(S2.map(x=>[x[0],x[1]]).concat([['q_obes','Obésité évidente']]));
+$('cc1').innerHTML=CK(CC1);$('cc2').innerHTML=CK(CC2);$('cx').innerHTML=CK(CX);
+$('f3').innerHTML=N('cr','Créatininémie')+`<label>Unité<select id="cru"><option value="u">µmol/L</option><option value="m">mg/L</option><option value="d">mg/dL</option></select></label><label>Formule DFG<select id="frm"><option value="ck">CKD-EPI 2021</option><option value="cg">Cockcroft-Gault (normalisé)</option></select></label>`+N('k','K⁺','mmol/L')+N('gly','Glycémie à jeun','g/L')+N('ct','Chol. total','g/L')+N('hdl','HDL-c','g/L')+N('tg','Triglycérides','g/L')+N('ldl','LDL-c (si mesuré)','g/L')+N('rac','RAC urinaire','mg/g')+`<label>Bandelette protéinurie<select id="band"><option value="">Non faite</option><option value="0">Négative</option><option value="1">+</option><option value="2">≥ ++</option></select></label>`+N('sok','Sokolow SV1+RV5','mm (> 35)')+N('ict','Index cardio-thoracique','% (> 50)');
+$('c3a').innerHTML=CK(H);$('c3b').innerHTML=CK(FR);$('c3c').innerHTML=CK(EX);$('c4').innerHTML=CK(T4);$('c4b').innerHTML=CK(TT);$('f4').innerHTML=N('mds','PAS moyenne jour (MAPA)','mmHg')+N('mns','PAS moyenne nuit (MAPA)','mmHg');
+$('uu').innerHTML=U.map(u=>`<details><summary>${u[0]}</summary><p>${u[1]}</p></details>`).join('')+'<p class="note">Adapter au protocole du service et aux produits disponibles.</p>';
+$('q').oninput=mt;mt();document.addEventListener('input',refresh);document.addEventListener('change',refresh);go('p1');
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+</script></body></html>
